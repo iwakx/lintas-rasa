@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Menu;
+use App\Models\Menu; 
+use App\Models\Order; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
 
@@ -54,7 +56,7 @@ class MenuController extends Controller
      */
     public function show(Menu $menu)
     {
-        // 
+        //
     }
 
     /**

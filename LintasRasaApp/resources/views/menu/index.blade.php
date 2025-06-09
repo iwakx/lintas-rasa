@@ -575,7 +575,7 @@
             </button>
         </form>
         <button id="reset-cart-btn" class="cart-btn reset-btn">
-            Reset
+            Clear
         </button>
     </div>
 </div>
@@ -589,19 +589,27 @@
     }
 
     function addToCart(id, name, price) {
+        const existingIds = Object.keys(cart);
+        if (existingIds.length > 0 && !cart[id]) {
+            alert('Maaf, Anda hanya bisa memesan 1 jenis menu per transaksi. Silakan kosongkan keranjang terlebih dahulu.');
+            return;
+        }
+
         if (cart[id]) {
             cart[id].qty++;
         } else {
             cart[id] = { name, price, qty: 1 };
         }
+
         renderCart();
         updateMenuControls();
         showCart();
-        
-        // Add animation class to the clicked card
-        const card = document.querySelector(`[data-menu-id="${id}"]`).closest('.menu-card');
-        card.classList.add('animate-pulse');
-        setTimeout(() => card.classList.remove('animate-pulse'), 500);
+
+        const card = document.querySelector(`[data-menu-id="${id}"]`)?.closest('.menu-card');
+        if (card) {
+            card.classList.add('animate-pulse');
+            setTimeout(() => card.classList.remove('animate-pulse'), 500);
+        }
     }
 
     function decreaseFromCart(id) {
@@ -620,7 +628,7 @@
 
     function resetCart() {
         if (Object.keys(cart).length === 0) return;
-        
+
         if (confirm('Apakah Anda yakin ingin mengosongkan keranjang?')) {
             cart = {};
             renderCart();
@@ -630,18 +638,12 @@
     }
 
     function showCart() {
-        const floatingCart = document.getElementById('floating-cart');
-        floatingCart.classList.add('active');
-        
-        // Reset the hide timeout if it exists
-        if (cartAnimationTimeout) {
-            clearTimeout(cartAnimationTimeout);
-        }
+        document.getElementById('floating-cart')?.classList.add('active');
+        if (cartAnimationTimeout) clearTimeout(cartAnimationTimeout);
     }
 
     function hideCart() {
-        const floatingCart = document.getElementById('floating-cart');
-        floatingCart.classList.remove('active');
+        document.getElementById('floating-cart')?.classList.remove('active');
     }
 
     function renderCart() {
@@ -651,12 +653,13 @@
         const orderJsonInput = document.getElementById('order-json');
         const orderTotalInput = document.getElementById('order-total');
 
+        if (!cartItemsContainer) return;
+
         cartItemsContainer.innerHTML = '';
         let total = 0;
         let itemCount = 0;
-
         const orderData = {};
-        
+
         for (const id in cart) {
             const item = cart[id];
             const subtotal = item.price * item.qty;
@@ -683,9 +686,8 @@
             resetBtn.disabled = false;
         }
 
-        // Update hidden inputs
-        orderJsonInput.value = JSON.stringify(orderData);
-        orderTotalInput.value = total;
+        if (orderJsonInput) orderJsonInput.value = JSON.stringify(orderData);
+        if (orderTotalInput) orderTotalInput.value = total;
     }
 
     function updateMenuControls() {
@@ -704,16 +706,17 @@
             }
         }
 
-        // Reset controls for items not in cart
         document.querySelectorAll('[id^="cart-controls-"]').forEach(ctrl => {
             const id = ctrl.id.replace('cart-controls-', '');
             if (!cart[id]) {
+                const name = ctrl.dataset.menuName;
+                const price = ctrl.dataset.menuPrice;
                 ctrl.innerHTML = `
                     <div class="menu-actions">
                         <button class="add-to-cart"
                                 data-menu-id="${id}"
-                                data-menu-name="${ctrl.dataset.menuName}"
-                                data-menu-price="${ctrl.dataset.menuPrice}">
+                                data-menu-name="${name}"
+                                data-menu-price="${price}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
                             </svg>
@@ -741,13 +744,14 @@
     document.addEventListener('DOMContentLoaded', () => {
         bindNewButtons();
         renderCart();
-        
-        // Set up reset button
-        document.getElementById('reset-cart-btn').addEventListener('click', resetCart);
-        
-        // Hide cart initially if empty
+
+        const resetBtn = document.getElementById('reset-cart-btn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', resetCart);
+        }
+
         if (Object.keys(cart).length === 0) {
-            document.getElementById('floating-cart').classList.remove('active');
+            hideCart();
         }
     });
 </script>

@@ -30,8 +30,8 @@
             <div class="text-right text-lg font-bold text-red-600 mb-4">
                 Total: Rp {{ number_format($total, 0, ',', '.') }}
             </div>
-
-            <form action="{{ route('payment.qris') }}" method="GET">
+        @foreach ($menus as $menu)
+            <form action="{{ route('payment.qris', ['menuId' => $menu->id]) }}" method="GET">
                 @csrf
                 <input type="hidden" name="order" value="{{ json_encode($orderDetails) }}">
                 <input type="hidden" name="total" value="{{ $total }}">
@@ -39,6 +39,7 @@
                     Bayar Sekarang
                 </button>
             </form>
+        @endforeach
         @else
             <p class="text-gray-600">Tidak ada item dalam pesanan.</p>
         @endif

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-        public function confirm(Request $request)
+    public function confirm(Request $request)
     {
         $orderJson = $request->input('order') ?? session('cart_order');
         $total = $request->input('total') ?? session('cart_total');
@@ -45,18 +45,17 @@ class PaymentController extends Controller
             'orderDetails' => $orderDetails,
             'total' => $total,
             'order' => $orderJson,
+            'menus' => $menus,
         ]);
     }
 
-    public function qrisPage(Request $request)
+    public function qrisPage($menuId)
     {
-        $orderJson = session('cart_order');
-        $total = session('cart_total');
+        $menu = Menu::findOrFail($menuId);
+        $total = session('cart_total') ?? 0;
+        $order = session('cart_order') ?? '{}';
 
-        return view('payment.qris', [
-            'order' => $orderJson,
-            'total' => $total,
-        ]);
+        return view('payment.qris', compact('menu', 'total', 'order'));
     }
 
     public function process(Request $request)
@@ -79,7 +78,9 @@ class PaymentController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('menu.index')->with('success', 'Transaksi berhasil dikirim. Menunggu konfirmasi admin.');
+        $orderId = $newOrder->id;
+
+        return redirect()->route('reviews.create', $newOrder->id)->with('success', 'Transaksi berhasil dikirim. Menunggu konfirmasi admin.');
     }
 
     private function generateItemSummary($order)

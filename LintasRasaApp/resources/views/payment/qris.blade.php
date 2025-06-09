@@ -4,7 +4,7 @@
 <div class="max-w-xl mx-auto py-10">
     <h2 class="text-2xl font-bold text-gray-800 mb-4">Scan QRIS untuk Melanjutkan Pembayaran</h2>
 
-    <img src="{{ asset('images/qris.png') }}" alt="QRIS" class="w-full h-auto mb-6 rounded shadow">
+    <img src="{{ asset('images/qris_' . $menu->id . '.png') }}" alt="QRIS {{ $menu->name }}" class="w-full h-auto mb-6 rounded shadow">
 
     <form action="{{ route('payment.process') }}" method="POST" enctype="multipart/form-data">
         @csrf

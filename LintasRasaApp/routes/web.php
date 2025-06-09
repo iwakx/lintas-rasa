@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,10 +15,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -45,7 +45,7 @@ Route::middleware(['auth'])->group(function () {
 
     // === Payment ===
     Route::get('/payment/confirm', [PaymentController::class, 'confirm'])->name('payment.confirm');
-    Route::get('/payment/qris', [PaymentController::class, 'qrisPage'])->name('payment.qris');
+    Route::get('/payment/qris/{menuId}', [PaymentController::class, 'qrisPage'])->name('payment.qris');
     Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
 
     // === Admin Payment ===
@@ -53,6 +53,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/orders', [PaymentController::class, 'adminIndex'])->name('admin.orders.index');
     Route::get('/admin/orders/{order}/edit', [PaymentController::class, 'adminEdit'])->name('admin.orders.edit');
     Route::put('/admin/orders/{order}', [PaymentController::class, 'adminUpdate'])->name('admin.orders.update');
+
+    // === Review/Ulasan ===
+    Route::get('/menu/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/reviews/{order}/create', [ReviewController::class, 'create'])->name('reviews.create');
+    Route::post('/reviews/{order}', [ReviewController::class, 'store'])->name('reviews.store');
 });
 });
 

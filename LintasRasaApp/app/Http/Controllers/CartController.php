@@ -42,23 +42,6 @@ class CartController extends Controller
                 'quantity' => 1,
             ];
         }
-
-        session(['cart' => $cart]);
-
-        return response()->json(['message' => 'Menu added to cart', 'cart' => $cart]);
-    }
-
-    public function remove(Request $request)
-    {
-        $menuId = $request->input('menu_id');
-        $cart = session('cart', []);
-
-        if (isset($cart[$menuId])) {
-            unset($cart[$menuId]);
-            session(['cart' => $cart]);
-        }
-
-        return response()->json(['message' => 'Item removed from cart', 'cart' => $cart]);
     }
 
     public function reset()

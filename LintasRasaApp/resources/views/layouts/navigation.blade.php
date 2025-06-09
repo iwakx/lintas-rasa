@@ -5,7 +5,7 @@
             <div class="flex items-center space-x-8">
                 <div class="flex-shrink-0">
                     <a href="{{ route('dashboard') }}" aria-label="Home">
-                        <img src="{{ asset('storage/assets/fontLogo.png') }}" alt="Your Logo" class="block h-16 w-auto text-brown-700 hover:text-brown-900 transition-colors duration-300" />
+                        <img src="{{ asset('storage/assets/LOGO1.png') }}" alt="Your Logo" class="block h-20 w-auto text-brown-700 hover:text-brown-900 transition-colors duration-300" />
                     </a>
                 </div>
 
@@ -28,5 +28,3 @@
         </div>
     </div>    
 </nav>
-
-

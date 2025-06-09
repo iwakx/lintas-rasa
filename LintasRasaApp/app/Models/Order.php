@@ -17,8 +17,23 @@ class Order extends Model
         'status',
     ];
 
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function items() 
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }
