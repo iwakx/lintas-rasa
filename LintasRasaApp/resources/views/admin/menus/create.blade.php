@@ -52,6 +52,14 @@
                 @endif
             </div>
 
+            {{-- Gambar QRIS --}}
+            <div class="mb-6">
+                <label for="qris_image" class="block text-gray-700 font-semibold mb-2">QRIS untuk Menu Ini</label>
+                <input type="file" name="qris_image" id="qris_image" accept="image/*"
+                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+
             <div class="flex justify-end">
                 <a href="{{ route('admin.menus.index') }}"
                     class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 mr-2">Batal</a>

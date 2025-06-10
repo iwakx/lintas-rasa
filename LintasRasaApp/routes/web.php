@@ -5,6 +5,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ExportOrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -50,16 +51,22 @@ Route::middleware(['auth'])->group(function () {
 
     // === Admin Payment ===
     Route::middleware(['admin'])->group(function () {
-    Route::get('/admin/orders', [PaymentController::class, 'adminIndex'])->name('admin.orders.index');
-    Route::get('/admin/orders/{order}/edit', [PaymentController::class, 'adminEdit'])->name('admin.orders.edit');
-    Route::put('/admin/orders/{order}', [PaymentController::class, 'adminUpdate'])->name('admin.orders.update');
+        Route::get('/admin/orders', [PaymentController::class, 'adminIndex'])->name('admin.orders.index');
+        Route::get('/admin/orders/{order}/edit', [PaymentController::class, 'adminEdit'])->name('admin.orders.edit');
+        Route::put('/admin/orders/{order}', [PaymentController::class, 'adminUpdate'])->name('admin.orders.update');
+    });
 
     // === Review/Ulasan ===
     Route::get('/menu/reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::get('/reviews/{order}/create', [ReviewController::class, 'create'])->name('reviews.create');
     Route::post('/reviews/{order}', [ReviewController::class, 'store'])->name('reviews.store');
 });
+
+// === Export To PDF ===
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/orders/export-pdf', [ExportOrderController::class, 'exportPdf'])->name('admin.orders.export-pdf');
 });
+
 
 // Admin only route
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

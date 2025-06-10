@@ -35,16 +35,25 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+            'price'       => 'required|numeric|min:0',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+            'qris_image'  => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
         ]);
 
+        // Simpan gambar menu jika ada
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $request->image->storeAs('menu_images', $imageName, 'public');
             $validated['image'] = $imageName;
+        }
+
+        // Simpan gambar QRIS jika ada
+        if ($request->hasFile('qris_image')) {
+            $qrisName = 'qris_' . time() . '.' . $request->qris_image->extension();
+            $request->qris_image->storeAs('qris', $qrisName, 'public');
+            $validated['qris_image'] = 'qris/' . $qrisName;
         }
 
         Menu::create($validated);
@@ -72,24 +81,35 @@ class MenuController extends Controller
      */
     public function update(Request $request, Menu $menu)
     {
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric|min:0',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
-    ]);
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price'       => 'required|numeric|min:0',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+            'qris_image'  => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+        ]);
 
-    if ($request->hasFile('image')) {
-        // Hapus gambar lama jika ada
-        if ($menu->image && Storage::disk('public')->exists('menu_images/' . $menu->image)) {
-            Storage::disk('public')->delete('menu_images/' . $menu->image);
+        // Ganti gambar menu jika diupload baru
+        if ($request->hasFile('image')) {
+            if ($menu->image && Storage::disk('public')->exists('menu_images/' . $menu->image)) {
+                Storage::disk('public')->delete('menu_images/' . $menu->image);
+            }
+
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->storeAs('menu_images', $imageName, 'public');
+            $validated['image'] = $imageName;
         }
 
-        // Simpan gambar baru
-        $imageName = time() . '.' . $request->image->extension();
-        $request->image->storeAs('menu_images', $imageName, 'public');
-        $validated['image'] = $imageName;
-    }
+        // Ganti QRIS jika diupload baru
+        if ($request->hasFile('qris_image')) {
+            if ($menu->qris_image && Storage::disk('public')->exists($menu->qris_image)) {
+                Storage::disk('public')->delete($menu->qris_image);
+            }
+
+            $qrisName = 'qris_' . time() . '.' . $request->qris_image->extension();
+            $request->qris_image->storeAs('qris', $qrisName, 'public');
+            $validated['qris_image'] = 'qris/' . $qrisName;
+        }
 
         $menu->update($validated);
         return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil diubah');

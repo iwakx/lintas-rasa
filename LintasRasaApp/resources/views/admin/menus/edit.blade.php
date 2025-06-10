@@ -8,59 +8,57 @@
         @csrf
         @method('PUT')
 
+        {{-- Nama Menu --}}
         <div>
             <label for="name" style="font-weight: 600; display: block; margin-bottom: 5px;">Nama Menu</label>
-            <input 
-                type="text" 
-                name="name" 
-                id="name" 
-                value="{{ old('name', $menu->name) }}" 
-                required
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"
-            >
+            <input type="text" name="name" id="name" value="{{ old('name', $menu->name) }}" required
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
             @error('name')
                 <div style="color: red; margin-top: 5px;">{{ $message }}</div>
             @enderror
         </div>
 
+        {{-- Deskripsi --}}
         <div>
             <label for="description" style="font-weight: 600; display: block; margin-bottom: 5px;">Deskripsi</label>
-            <textarea 
-                name="description" 
-                id="description" 
-                rows="3"
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"
-            >{{ old('description', $menu->description) }}</textarea>
+            <textarea name="description" id="description" rows="3"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">{{ old('description', $menu->description) }}</textarea>
             @error('description')
                 <div style="color: red; margin-top: 5px;">{{ $message }}</div>
             @enderror
         </div>
 
+        {{-- Harga --}}
         <div>
             <label for="price" style="font-weight: 600; display: block; margin-bottom: 5px;">Harga (Rp)</label>
-            <input 
-                type="number" 
-                name="price" 
-                id="price" 
-                value="{{ old('price', $menu->price) }}" 
-                required
-                min="0"
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"
-            >
+            <input type="number" name="price" id="price" value="{{ old('price', $menu->price) }}" required min="0"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
             @error('price')
                 <div style="color: red; margin-top: 5px;">{{ $message }}</div>
             @enderror
         </div>
 
+                {{-- Gambar QRIS --}}
+        <div>
+            <label for="qris_image" style="font-weight: 600; display: block; margin-bottom: 5px;">QRIS Menu</label>
+            <input type="file" name="qris_image" id="qris_image" accept="image/*" style="padding: 5px;">
+            @error('qris_image')
+                <div style="color: red; margin-top: 5px;">{{ $message }}</div>
+            @enderror
+
+            @if ($menu->qris_image)
+                <div style="margin-top: 10px;">
+                    <p style="margin-bottom: 5px;">QRIS Saat Ini:</p>
+                    <img src="{{ asset('storage/' . $menu->qris_image) }}" alt="QRIS Image"
+                         style="max-width: 100%; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+            @endif
+        </div>
+
+        {{-- Gambar Menu --}}
         <div>
             <label for="image" style="font-weight: 600; display: block; margin-bottom: 5px;">Gambar Menu</label>
-            <input 
-                type="file" 
-                name="image" 
-                id="image"
-                accept="image/*"
-                style="padding: 5px;"
-            >
+            <input type="file" name="image" id="image" accept="image/*" style="padding: 5px;">
             @error('image')
                 <div style="color: red; margin-top: 5px;">{{ $message }}</div>
             @enderror
@@ -68,43 +66,22 @@
             @if ($menu->image)
                 <div style="margin-top: 10px;">
                     <p style="margin-bottom: 5px;">Gambar Saat Ini:</p>
-                    <img src="{{ asset('storage/menu_images/' . $menu->image) }}" alt="Menu Image" style="max-width: 100%; border: 1px solid #ccc; border-radius: 5px;">
+                    <img src="{{ asset('storage/menu_images/' . $menu->image) }}" alt="Menu Image"
+                         style="max-width: 100%; border: 1px solid #ccc; border-radius: 5px;">
                 </div>
             @endif
         </div>
 
+        {{-- Tombol --}}
         <div style="display: flex; gap: 10px; justify-content: flex-end;">
             <a href="{{ route('admin.menus.index') }}"
-               style="
-                 padding: 12px 24px; 
-                 background-color: #6c757d; 
-                 color: white; 
-                 border-radius: 5px; 
-                 text-decoration: none;
-                 font-weight: 600;
-                 font-size: 16px;
-                 display: inline-block;
-                 text-align: center;
-                 transition: background-color 0.3s ease;
-               "
+               style="padding: 12px 24px; background-color: #6c757d; color: white; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 16px;"
                onmouseover="this.style.backgroundColor='#5a6268'"
-               onmouseout="this.style.backgroundColor='#6c757d'"
-            >Batal</a>
+               onmouseout="this.style.backgroundColor='#6c757d'">Batal</a>
 
-            <button type="submit" style="
-                background-color: #3490dc; 
-                color: white; 
-                padding: 12px 24px; 
-                border: none; 
-                border-radius: 5px; 
-                cursor: pointer;
-                font-weight: 600;
-                font-size: 16px;
-                transition: background-color 0.3s ease;
-            "
-            onmouseover="this.style.backgroundColor='#2779bd'"
-            onmouseout="this.style.backgroundColor='#3490dc'"
-            >Update</button>
+            <button type="submit" style="background-color: #3490dc; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 16px;"
+                onmouseover="this.style.backgroundColor='#2779bd'"
+                onmouseout="this.style.backgroundColor='#3490dc'">Update</button>
         </div>
     </form>
 </div>

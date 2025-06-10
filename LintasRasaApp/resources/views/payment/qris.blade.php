@@ -4,7 +4,15 @@
 <div class="max-w-xl mx-auto py-10">
     <h2 class="text-2xl font-bold text-gray-800 mb-4">Scan QRIS untuk Melanjutkan Pembayaran</h2>
 
-    <img src="{{ asset('images/qris_' . $menu->id . '.png') }}" alt="QRIS {{ $menu->name }}" class="w-full h-auto mb-6 rounded shadow">
+    @if ($menu->qris_image)
+        <img src="{{ asset('storage/' . $menu->qris_image) }}" 
+             alt="QRIS {{ $menu->name }}" 
+             class="w-full h-auto mb-6 rounded shadow">
+    @else
+        <div class="mb-6 p-4 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded">
+            Gambar QRIS belum tersedia untuk menu ini.
+        </div>
+    @endif
 
     <form action="{{ route('payment.process') }}" method="POST" enctype="multipart/form-data">
         @csrf
